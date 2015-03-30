@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="WeatherApp">
+    <head>
+    <meta charset="UTF-8">
+        <title>Weather Forecast by V.D</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Weather forecast using openweathermap.org">
+        <meta name="author" content="Valentin DARRICAU">
+
+        <!--Bootstrap + my style-->
+        <link rel="icon" href="style/img/CloudPlainBlue.png">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="style/angular-busy.min.css">
+        
+        <link rel="stylesheet" href="style/style.css">
+        
+        <!--Scripts-->
+        <!--Others scripts used-->
+        <script src="controller/vendor/angular.min.js"></script>
+        <script src="controller/vendor/angular-route.js"></script>
+        <script src="controller/vendor/ui-bootstrap-0.12.1.min.js"></script>
+        <script src="controller/vendor/cookies.js"></script>
+        <script src="controller/vendor/angular-busy.min.js"></script>
+        <script src="controller/vendor/angular-translate.min.js"></script>
+        <script src="controller/vendor/angular-translate-storage-cookie.min.js"></script>
+        <!--My script-->
+        <script src="controller/app.js"></script>
+        
+       
+    </head> 
+    <body ng-controller = 'MainCtrl'>
+        <div ng-view>
+        </div>
+    </body>
+</html>

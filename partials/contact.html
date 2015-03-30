@@ -1,0 +1,44 @@
+<section class="container col-md-12">
+	<div class='row'>
+        <nav role="navigation" class="navbar navbar-inverse navbar-fixed-top">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header col-md-3">
+            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+              <a href="#/home" class="navbar-brand" translate='TITLE'>Weather Forecast by V.D.</a>
+          </div>
+            <!-- Collection of nav links and other content for toggling -->
+          
+            <div id="navbarCollapse" class="collapse navbar-collapse col-md-6">
+                <ul class="nav navbar-nav">
+                    <li><a href="#/home" translate='NAV_HOME'>Home</a></li>
+                    <li><a href="#/about" translate='NAV_ABOUT'>About</a></li>
+                    <li class="active"><a href="#/contact" translate='NAV_CONTACT'>Contact</a></li>
+                </ul>
+             </div>
+
+            <div class="btn-group col-md-1">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span translate='NAV_LANGUAGE'>Language(english default)</span> <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#/contact" ng-click="changeLanguage('en')">{{'BUTTON_LANG_EN' | translate}}</a></li>
+                <li><a href="#/contact" ng-click="changeLanguage('fr')">{{'BUTTON_LANG_FR' | translate}}</a></li>
+              </ul>
+            </div>
+        </nav>
+    </div>
+
+	<div class="row contact-jb"></div>
+		<div class="col-md-10 col-md-offset-1">
+			<div class="jumbotron">
+				<h1 translate='NAV_CONTACT'>Contact</h1></br>
+				<p translate='CONTACT_TEXT'>If you have any questions or suggestions, please contact me by <a href='mailto:valentin.darricau@laposte.net'>e-mail</a>.</p>
+			</div>
+		</div>
+	</div>
+</section>

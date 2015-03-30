@@ -1,0 +1,39 @@
+body {
+  padding-top: 100px;
+  background-image:url(img/IMG-FOND-BLEU.jpg);
+  background-repeat: repeat-y;
+  background-repeat: repeat-x;
+  overflow: auto;
+}
+h1 {
+  text-align: center;
+}
+
+table {
+  background-color: white;
+}
+.btn-group{
+  padding-top:  8px;
+}
+#searchButton{
+  padding-top: 1.7%;
+}
+.subtitle, #city, #country, #lon, #lat  {
+  color: white;
+}
+
+input,th{
+  background-color:#EEE;
+}
+
+.jumbotron {
+  background-color:#DDD;
+}
+
+.error-result, .tb-result, .coord-form, .about-jb, .contact-jb{
+  padding-top: 5%;
+}
+
+.tb-result{
+  text-align: center;
+}
