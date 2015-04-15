@@ -79,15 +79,15 @@
           <h3 class ='subtitle' translate='SUBTITLE_COORD'>Weather by Coordonates:</h3>
           <div class='row'>          
             <label class = 'col-md-5'>
-              <span id="lon" translate='LON'>Longitude : 
+              <span id="lat" translate='LAT'>Latitude : 
               </span>
-              <input type="text" class = "form-control" restrict="[^0-9.]" ng-model="lonSearch" ng-change="auto_slug()" placeholder="ex: 2.35">
+              <input type="text" class = "form-control" restrict="[^0-9.]" ng-model="latSearch" ng-change="auto_slug()" placeholder="ex: 2.35">
               </input>
             </label>
             <label class = 'col-md-5'>
-              <span id="lat" translate='LAT'>Latitude :
+              <span id="lon" translate='LON'>Longitude :
               </span> 
-              <input type="text" class = "form-control" restrict="[^0-9.]" ng-model="latSearch" ng-change="auto_slug()" placeholder="ex: 48.85">
+              <input type="text" class = "form-control" restrict="[^0-9.]" ng-model="lonSearch" ng-change="auto_slug()" placeholder="ex: 48.85">
               </input>
             </label> 
             <label id = 'searchButton' class='col-md-2'> 
@@ -111,34 +111,54 @@
       </div>
     </div>
 
-
     <!--Table of the results-->
-    <div class="row tb-result">
+    <div class="row tb-result" ng-show="showResult()">
       <div class='col-md-10 col-md-offset-1'>
-        <div class="table-responsive" ng-show="showResult()">
-          <caption>
-            <h3 class='subtitle'>{{city}} <small>{{country}}</small></h3>
+
+
+      <table st-table="allData" class="table table-striped">
+        <caption>
+            <h3 class='subtitle'>{{city}} 
+              <small>{{country}}
+                <div class="btn-group nb-result">
+                  <button type="button" class="btn ">{{dayNumber}}</button>
+                  <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="" ng-click="changeDayNumber(1)">1</a></li>
+                    <li><a href="" ng-click="changeDayNumber(3)">3</a></li>
+                    <li><a href="" ng-click="changeDayNumber(7)">7</a></li>
+                    <li><a href="" ng-click="changeDayNumber(10)">10</a></li>
+                    <li><a href="" ng-click="changeDayNumber(14)">14</a></li>
+                  </ul>
+                </div>
+              </small>
+            </h3>
           </caption>
-          <table class="table table-bordered">
-            <tr>
-              <th translate='TAB_WEATHER'>Weather</th>
-              <th><!--{{weather}}--> <img ng-src = '{{img}}'/></th>
-            </tr>
-            <tr>
-              <th translate='TAB_PRESSURE'>Pressure</th>
-              <th>{{pressure}} hPa</th>
-            </tr>
-            <tr>
-              <th translate='TAB_TEMP'>Temperature</th>
-              <th>{{temp}} {{unityTemp}}</th>
-            </tr>
-            <tr>
-              <th translate='TAB_HUMIDITY'>Humidity</th>
-              <th>{{humidity}}%</th>
-            </tr>
-          </table>
-        </div>
+        <thead>
+        <tr>
+          <th translate='TAB_DATE'>Date</th>
+          <th translate='TAB_WEATHER'>Weather</th>
+          <th translate='TAB_PRESSURE'>Pressure</th>
+          <th translate='TAB_TEMP'>Temperature</th>
+          <th translate='TAB_HUMIDITY'>Humidity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="oneData in allData| limitTo:dayNumber">
+          <td>{{oneData.date}}</td>
+          <td><img ng-src = '{{oneData.img}}'/></td>
+          <td>{{oneData.pressure}} hPa</td>
+          <td>{{oneData.temp}} {{unityTemp}}</td>
+          <td>{{oneData.humidity}}%</td>
+        </tr>
+        </tbody>
+      </table>
       </div>
+      <!-- Number of results -->
+      
     </div>
   </div>
 </section>                                

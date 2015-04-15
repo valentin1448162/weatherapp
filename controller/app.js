@@ -6,8 +6,7 @@
  */
 var WeatherApp = angular.module('WeatherApp', [
     //Module dependencies
-    'ngRoute','ui.bootstrap','ngCookies','cgBusy','pascalprecht.translate',
- ]);
+    'ngRoute','ui.bootstrap','smart-table','ngCookies','cgBusy','pascalprecht.translate']);
 
 
 /**
@@ -22,14 +21,46 @@ WeatherApp.controller('MainCtrl', ['$scope','$http' , '$cookieStore', '$translat
 	$scope.showError 		= false;
 	var isShow 				= false;
 
-	var date 				= new Date(); 
-	$scope.date 			= date.toLocaleDateString();
 
 	$scope.unityTemp 		= 'C°'; //here to compare if radioModel change 
 	$scope.radioModel 		= 'C°'; //C° by default
 	
+	$scope.dayNumber		= 1;         //Number of day print on the page by default
+	$scope.allData			= Array(14); //Array which stores all the data extracted from the json in "OneData" objects
+	
+
 	/**
-	 * fonction used to change the language (work with the config below)
+	 * Variables for extracting the data from the json
+	 */
+	var weather;
+	var pressure;
+	var humidity;
+	var img;
+	var date;
+	var temp;
+
+	/**
+	 *Class for storing the data from the API
+	 */
+	function OneData(one_weather,one_pressure,one_humidity,one_img,one_date,one_temp){
+		this.weather 	= one_weather;
+		this.pressure 	= one_pressure;
+		this.humidity 	= one_humidity; 
+		this.img        = one_img;
+		this.date 		= one_date;
+		this.temp  		= one_temp;
+	}
+
+	/**
+	 * Fonction for changing the amount of results printed (works with ng-repeat)
+	 */
+	$scope.changeDayNumber = function(key){
+		if($scope.dayNumber != key){
+			$scope.dayNumber = key;
+		}
+	}
+	/**
+	 * fonction for changing the language of the page (work with the config below)
 	 */
 	$scope.changeLanguage = function (key) {
     	$translate.use(key);
@@ -40,7 +71,6 @@ WeatherApp.controller('MainCtrl', ['$scope','$http' , '$cookieStore', '$translat
 	 * Checks if the fields City and Country are filled
 	 */
 	$scope.searchCity = function(){
-		//$scope.showResult(false);
 		$scope.showError 	= false;
 		if($scope.citySearch && $scope.countrySearch){
 			$scope.search = this.citySearch + ',' + this.countrySearch;
@@ -71,14 +101,20 @@ WeatherApp.controller('MainCtrl', ['$scope','$http' , '$cookieStore', '$translat
 			return;
 		}
 		if (temp === 'F°'){
-			$scope.temp = $scope.temp *1.8 + 32;
+			for(var i = 0; i<$scope.allData.length; i++){
+				$scope.allData[i].temp = $scope.allData[i].temp *1.8 + 32;
+				$scope.allData[i].temp = $scope.allData[i].temp.toPrecision(3);
+			}
 			$scope.unityTemp = 'F°';
 		}
 		else {
-			$scope.temp = ($scope.temp - 32)/1.8;
+			for(var i = 0; i<$scope.allData.length; i++){
+				$scope.allData[i].temp = ($scope.allData[i].temp - 32)/1.8;
+				$scope.allData[i].temp = $scope.allData[i].temp.toPrecision(3);
+			}
 			$scope.unityTemp = 'C°';
 		}
-		$scope.temp = $scope.temp.toPrecision(3);
+		
 	};
 
 	/**
@@ -105,7 +141,7 @@ WeatherApp.controller('MainCtrl', ['$scope','$http' , '$cookieStore', '$translat
 	$scope.searchJSON = function(location){
 		if($scope.searchCity() && location === 'city'){
 			delete $http.defaults.headers.common['X-Requested-With'];
-			$scope.httpPromise = $http.get('http://api.openweathermap.org/data/2.5/weather?q=' + this.search)
+			$scope.httpPromise = $http.get('http://api.openweathermap.org/data/2.5/forecast/daily?q=' + this.search + '&cnt=14&mode=json')
 				.success(function(data, status, headers, config){
 					$scope.json = data;
 
@@ -126,7 +162,7 @@ WeatherApp.controller('MainCtrl', ['$scope','$http' , '$cookieStore', '$translat
 		
 		if($scope.searchCoord() && location === 'coord'){
 			delete $http.defaults.headers.common['X-Requested-With'];
-			$http.get('http://api.openweathermap.org/data/2.5/weather?' + this.search)
+			$http.get('http://api.openweathermap.org/data/2.5/forecast/daily?' + this.search + '&cnt=14&mode=json')
 				.success(function(data, status, headers, config){
 					$scope.json = data;
 					if($scope.json.cod !=='404'){
@@ -145,31 +181,40 @@ WeatherApp.controller('MainCtrl', ['$scope','$http' , '$cookieStore', '$translat
 	};
 
 	/**
- 	* Parse the JSON file found by the method search JSON
+ 	* Parse the JSON file found by the method searchJSON() which contains 14 days of forecast
  	*/
 	$scope.parseJson = function(){
 
-		//Do the conversion between Kelvin and the given temperature unit (Celcius or Farenheit)
-		$scope.temp  	= $scope.json.main.temp;
-
-		if(this.unityTemp === 'C°'){
-			$scope.temp -= 273,15;
-		}
-		else if(this.unityTemp === 'F°'){
-			$scope.temp = ($scope.temp - 273.15)*1.8 + 32
-		}
-
-		$scope.temp = $scope.temp.toPrecision(3);
-
 		//Ajust the datas to the datas found by the API
-		$scope.city 	= $scope.json.name;
-		$scope.country 	= $scope.json.sys.country;
-		$scope.weather  = $scope.json.weather[0].main;		
-		$scope.pressure = $scope.json.main.pressure;
-		$scope.humidity = $scope.json.main.humidity;
-		$scope.img 		= 'style/img/' + $scope.json.weather[0].icon + '.png'; 
+		$scope.city 	= $scope.json.city.name;
+		$scope.country 	= $scope.json.city.country;
 
-		
+		//Fill allData
+		for (var i = 0; i <14; i++) {
+			weather  	= $scope.json.list[i].weather[0].main;		
+			pressure 	= $scope.json.list[i].pressure;
+			humidity 	= $scope.json.list[i].humidity;
+			img			= 'style/img/' + $scope.json.list[i].weather[0].icon + '.png'; 
+			
+
+			date 			= new Date($scope.json.list[i].dt * 1000); 
+			date 			= date.toLocaleDateString();
+
+
+			//Do the conversion between Kelvin and the given temperature unit (Celcius or Farenheit)
+			temp  	= $scope.json.list[i].temp.day;
+			if(this.unityTemp === 'C°'){
+				temp -= 273,15;
+			}
+			else if(this.unityTemp === 'F°'){
+				temp = (temp - 273.15)*1.8 + 32
+			}
+
+			temp = temp.toPrecision(3);
+
+			$scope.allData[i] = new OneData(weather,pressure,humidity,img,date,temp);
+		}
+	
 
 		isShow = true;
 		$scope.showResult();
@@ -210,7 +255,7 @@ WeatherApp.config(['$routeProvider',
 
 
 /**
- * Directive used to filter invalid chars
+ * Directive used to filter invalid chars in forms
  * Code adapted from http://stackoverflow.com/questions/28879865/javascript-regular-expresion	
  */
 
@@ -250,6 +295,7 @@ WeatherApp.config(function ($translateProvider) {
     LAT 			: 'Latitude : ',  
     ERROR_TITLE		: 'CITY NOT FOUND',
     ERROR_MSG		: 'The city you ask can\'t be found.',
+    TAB_DATE		: 'Date',
     TAB_WEATHER		: 'Weather',
     TAB_PRESSURE	: 'Pressure',
     TAB_TEMP		: 'Temperature',
@@ -278,6 +324,7 @@ WeatherApp.config(function ($translateProvider) {
     LAT 			: 'Latitude : ',  
     ERROR_TITLE		: 'VILLE NON TROUVEE',
     ERROR_MSG		: 'La ville que vous demandez n\'a pas été trouvée',
+    TAB_DATE		: 'Date',
     TAB_WEATHER		: 'Temps',
     TAB_PRESSURE	: 'Pression',
     TAB_TEMP		: 'Température',

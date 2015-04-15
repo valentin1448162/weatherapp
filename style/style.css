@@ -2,8 +2,6 @@ body {
   padding-top: 100px;
   background-image:url(img/IMG-FOND-BLEU.jpg);
   background-repeat: repeat-y;
-  background-repeat: repeat-x;
-  overflow: auto;
 }
 h1 {
   text-align: center;
@@ -15,6 +13,7 @@ table {
 .btn-group{
   padding-top:  8px;
 }
+
 #searchButton{
   padding-top: 1.7%;
 }
